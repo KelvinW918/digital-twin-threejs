@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twin · Warehouse Inventory 3D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="info">
+        <h1>🏭 Digital Twin · Warehouse Inventory</h1>
+        <p>3D Visualization | Real-time Stock Simulation | Click on any product</p>
+    </div>
+    
+    <div id="stats-panel">
+        <h3>📊 Inventory Summary</h3>
+        <div id="stats-content">
+            <p>🟢 High stock (70-100%): <span id="high-count">0</span></p>
+            <p>🟡 Medium stock (30-70%): <span id="medium-count">0</span></p>
+            <p>🔴 Low stock (0-30%): <span id="low-count">0</span></p>
+            <hr>
+            <p>📦 Total products: <span id="total-count">0</span></p>
+            <p>✅ Fill rate: <span id="fill-rate">0</span>%</p>
+        </div>
+    </div>
+    
+    <div id="tooltip" style="display: none;"></div>
+    
+    <div class="controls-note">
+        🖱️ Mouse: Rotate (left click) | Zoom (scroll) | Pan (right click)
+    </div>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <script type="module" src="main.js"></script>
+</body>
+</html>
