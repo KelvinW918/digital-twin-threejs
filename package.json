@@ -2,7 +2,6 @@
   "name": "digital-twin-threejs",
   "version": "1.0.0",
   "description": "3D Warehouse Digital Twin with Three.js",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
