@@ -1,35 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Twin · Warehouse Inventory 3D</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🏭 Digital Twin · Warehouse 3D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="info">
-        <h1>🏭 Digital Twin · Warehouse Inventory</h1>
-        <p>3D Visualization | Real-time Stock Simulation | Click on any product</p>
-    </div>
-    
-    <div id="stats-panel">
-        <h3>📊 Inventory Summary</h3>
-        <div id="stats-content">
-            <p>🟢 High stock (70-100%): <span id="high-count">0</span></p>
-            <p>🟡 Medium stock (30-70%): <span id="medium-count">0</span></p>
-            <p>🔴 Low stock (0-30%): <span id="low-count">0</span></p>
-            <hr>
-            <p>📦 Total products: <span id="total-count">0</span></p>
-            <p>✅ Fill rate: <span id="fill-rate">0</span>%</p>
+    <!-- ============================================
+    CANVAS 3D - SIEMPRE DETRÁS
+    ============================================ -->
+    <div id="canvas-container"></div>
+
+    <!-- ============================================
+    TOP BAR - MINIMALISTA
+    ============================================ -->
+    <nav id="topbar">
+        <div class="topbar-left">
+            <span class="logo-icon">🏭</span>
+            <span class="logo-text">Digital Twin</span>
+            <span class="live-badge">
+                <span class="live-dot"></span>
+                LIVE
+            </span>
+        </div>
+        <div class="topbar-right">
+            <button id="reset-view-btn" class="btn-icon" title="Reset View">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12a9 9 0 1 0 9-9m0 0v6m0-6h-6"/>
+                </svg>
+            </button>
+            <button id="toggle-stats-btn" class="btn-icon" title="Toggle Stats">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================
+    STATS PANEL - COLAPSABLE Y FLOTANTE
+    ============================================ -->
+    <div id="stats-panel" class="stats-collapsed">
+        <div class="stats-handle" id="stats-handle">
+            <span class="handle-icon">📊</span>
+            <span class="handle-text">Inventory</span>
+            <span class="handle-badge" id="total-badge">300</span>
+        </div>
+        
+        <div class="stats-body">
+            <div class="stats-grid">
+                <div class="stat-mini high">
+                    <span class="stat-mini-dot"></span>
+                    <span class="stat-mini-value" id="high-count">0</span>
+                    <span class="stat-mini-label">High</span>
+                </div>
+                <div class="stat-mini medium">
+                    <span class="stat-mini-dot"></span>
+                    <span class="stat-mini-value" id="medium-count">0</span>
+                    <span class="stat-mini-label">Medium</span>
+                </div>
+                <div class="stat-mini low">
+                    <span class="stat-mini-dot"></span>
+                    <span class="stat-mini-value" id="low-count">0</span>
+                    <span class="stat-mini-label">Low</span>
+                </div>
+            </div>
+            
+            <div class="stats-details">
+                <div class="stat-row">
+                    <span>📦 Total</span>
+                    <strong id="total-count">0</strong>
+                </div>
+                <div class="stat-row">
+                    <span>✅ Fill Rate</span>
+                    <strong id="fill-rate">0%</strong>
+                </div>
+                <div class="stat-row">
+                    <span>⚡ Status</span>
+                    <strong style="color: #34d399;">Operational</strong>
+                </div>
+            </div>
+            
+            <div class="stats-live">
+                <span class="live-dot small"></span>
+                <span id="live-feed-text">SYSTEM LIVE</span>
+            </div>
         </div>
     </div>
-    
-    <div id="tooltip" style="display: none;"></div>
-    
-    <div class="controls-note">
-        🖱️ Mouse: Rotate (left click) | Zoom (scroll) | Pan (right click)
+
+    <!-- ============================================
+    TOOLTIP - MEJORADO
+    ============================================ -->
+    <div id="tooltip" class="tooltip-hidden">
+        <div class="tooltip-content">
+            <div class="tooltip-id" id="product-id">Product</div>
+            <div class="tooltip-stock" id="product-stock">0%</div>
+            <div class="tooltip-level" id="product-level">🟢 High</div>
+        </div>
     </div>
-    
+
+    <!-- ============================================
+    CONTROLS HELP - HIDDEN EN MÓVIL
+    ============================================ -->
+    <div id="controls-help">
+        <span>🖱️ Drag to rotate</span>
+        <span>📜 Scroll to zoom</span>
+    </div>
+
+    <!-- ============================================
+    THREE.JS IMPORTS
+    ============================================ -->
     <script type="importmap">
         {
             "imports": {
